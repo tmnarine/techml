@@ -18,3 +18,10 @@ In datascience, RMSE is used to find the error between predicted and observed va
 
 This error calculation is also useful in areas such as machine learning.  Comparing the RMSE of an algorithm run on the CPU versus GPU can be used to get a handle on accurracy.
 Here is a simple [example](ml/rmse/rmse.py) that demonstrates the use of RMSE.
+
+### Virtual GPU in Python
+It is an understatement to say that working with machine learning algorithms is complex.  I have found it useful to prototype various bits of functionality in Python.  This example code takes prototyping a step further and allows the mimicking of a virtual GPU in Python.  Required objects such as Devices, Buffers, Encoders, Command Buffers can be implemented for simple GPGPU workflows.  The intention is to move some of the required thinking/prototyping further left in the development cycle(assuming that you work in a left to right domain). There are two Python files:
+
+* [mgpu - main samples ](ml/vgpu/mgpu.py)
+* [vgpu - a virtual GPU](ml/vgpu/vgpu.py)
+
