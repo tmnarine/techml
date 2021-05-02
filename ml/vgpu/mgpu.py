@@ -5,22 +5,27 @@
 import vgpu
 import inspect
 
+#
+# Test functions
+#   Compute shader classes declared as a closure
+#
 
+# Copy kernel to duplicate info from one buffer to another
 def testCopyKernel():
     print("Test: %s" % _fn_name())
 
-    class KernelGrayscale(vgpu.KernelObject):
+    class KernelCopy(vgpu.KernelObject):
 
         def __init__(self):
             super().__init__()
 
-        # GPU kernel 
+        # GPU compute shader or kernel as called on macOS
         def run(self, buffer_in, buffer_out, H, W, grid_pos, thread_pos):
             self._kernel_pre() # Start with this call
             
             in_idx = grid_pos.x() * W + grid_pos.y()
             out_idx = in_idx
-            log_msg = ("\t\tkernelGrayscale: %d %d %s %s" % (H, W, grid_pos, thread_pos))
+            log_msg = ("\t\tkernelCopy: %d %d %s %s" % (H, W, grid_pos, thread_pos))
             buffer_out.set(out_idx, buffer_in.get(in_idx))
 
             return self._kernel_post(log_msg) # End with this return
@@ -41,7 +46,7 @@ def testCopyKernel():
         buffer_in.set(i,i+10)
 
     # Create kernel and pipeline state
-    kernel = KernelGrayscale()
+    kernel = KernelCopy()
     kernel = vgpu.Kernel(kernel.run)
     pipeline_state = vgpu.PipelineState(kernel)
 
@@ -68,6 +73,8 @@ def testCopyKernel():
     assert( buffer_in.contents() == buffer_out.contents() )
 
 
+# More complex workflow where we calculate x*x in one compute shader
+# and then add X to the result in another shader
 def test_x_times_x_plus_x():
     print("Test: %s" % _fn_name())
 
@@ -76,7 +83,7 @@ def test_x_times_x_plus_x():
         def __init__(self):
             super().__init__()
 
-        # GPU kernel 
+        # GPU compute shader or kernel as called on macOS
         def run(self, buffer_in, buffer_out, H, W, grid_pos, thread_pos):
             self._kernel_pre() # Start with this call
             
@@ -92,7 +99,8 @@ def test_x_times_x_plus_x():
 
         def __init__(self):
             super().__init__()
-            
+
+        # GPU compute shader or kernel as called on macOS
         def run(self, buffer_in, buffer_out, H, W, grid_pos, thread_pos):
             self._kernel_pre() # Start with this call
             

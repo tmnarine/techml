@@ -4,6 +4,7 @@
 # line to see lines such as the following:
 #    ... tensorflow/core/common_runtime/dml/dml_device_cache.cc:109] DirectML:
 #                       creating device on adapter 0 (AMD Radeon(TM) RX 5600M Series)
+# I used Python 3.7.7
 
 import numpy as np
 import tensorflow as tf

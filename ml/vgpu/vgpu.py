@@ -1,6 +1,6 @@
 #
 # Python script that emulates a simple virtual GPU:
-# - Script written in Metal style rather than Vk or Dx
+# - Script written in Metal style rather than Vk or DX
 # - Virtual GPU loosely based on AMD
 # - Handles floats only for simple memory model
 # - GPGPU
@@ -52,6 +52,7 @@ class _VGPU:
 # Classes
 #
 
+# self._logmsg controls if log output is on or off
 class Device:
 
     def __init__(self):
