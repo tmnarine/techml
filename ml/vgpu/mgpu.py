@@ -14,12 +14,17 @@ import inspect
 def testCopyKernel():
     print("Test: %s" % _fn_name())
 
+    # Decorator
+    def kernel(function):
+        return vgpu.get_function_no_globals(function)
+
     class KernelCopy(vgpu.KernelObject):
 
         def __init__(self):
             super().__init__()
 
         # GPU compute shader or kernel as called on macOS
+        @kernel
         def run(self, buffer_in, buffer_out, H, W, grid_pos, thread_pos):
             self._kernel_pre() # Start with this call
             
@@ -78,12 +83,17 @@ def testCopyKernel():
 def test_x_times_x_plus_x():
     print("Test: %s" % _fn_name())
 
+    # Decorator
+    def kernel(function):
+        return vgpu.get_function_no_globals(function)
+
     class KernelXTimesX(vgpu.KernelObject):
 
         def __init__(self):
             super().__init__()
 
         # GPU compute shader or kernel as called on macOS
+        @kernel
         def run(self, buffer_in, buffer_out, H, W, grid_pos, thread_pos):
             self._kernel_pre() # Start with this call
             
@@ -101,6 +111,7 @@ def test_x_times_x_plus_x():
             super().__init__()
 
         # GPU compute shader or kernel as called on macOS
+        @kernel
         def run(self, buffer_in, buffer_out, H, W, grid_pos, thread_pos):
             self._kernel_pre() # Start with this call
             

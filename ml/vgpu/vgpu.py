@@ -36,6 +36,8 @@
 #
 
 import inspect
+import types
+import builtins
 
 # Globals
 DeviceCounter = 0
@@ -307,3 +309,15 @@ class _CacheLineManager:
         return (self.__loads, self.__stores, self.__miss) 
 
    
+# Utility to remove globals from a function.  This will be called using a decorator
+# against the GPU execute method
+def get_function_no_globals(function):
+    assert(function)
+    builtin_globals = {'__builtins__': builtins}
+    code = function.__code__
+    function_defaults = function.__defaults__
+    # Build the new function - see help(types.FunctionType)
+    new_function = types.FunctionType(code, globals=builtin_globals, argdefs=function_defaults)
+    new_function.__annotations__ = function.__annotations__
+    return new_function
+    
