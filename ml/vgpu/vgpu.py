@@ -1,4 +1,6 @@
 #
+# vgpu.py - virtual GPU
+#
 # Python script that emulates a simple virtual GPU:
 # - Script written in Metal style rather than Vk or DX
 # - Virtual GPU loosely based on AMD
@@ -308,9 +310,16 @@ class _CacheLineManager:
     def stats(self):
         return (self.__loads, self.__stores, self.__miss) 
 
-   
-# Utility to remove globals from a function.  This will be called using a decorator
-# against the GPU execute method
+#
+# Utility functions
+#
+
+def function_name():
+    return inspect.stack()[1][3]
+
+
+# Utility to remove globals from a function.  This will be
+# called using a decorator against the GPU run() method
 def get_function_no_globals(function):
     assert(function)
     builtin_globals = {'__builtins__': builtins}
