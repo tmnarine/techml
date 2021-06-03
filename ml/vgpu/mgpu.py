@@ -1,7 +1,8 @@
 #
-# Main script for testing the virtual GPU
+# mgpu.py - mainline test script for testing the virtual GPU
 #
 
+import mcs
 import vgpu
 import inspect
 
@@ -12,23 +13,7 @@ import inspect
 
 # Copy kernel to duplicate info from one buffer to another
 def testCopyKernel():
-    print("Test: %s" % _fn_name())
-
-    class KernelCopy(vgpu.KernelObject):
-
-        def __init__(self):
-            super().__init__()
-
-        # GPU compute shader or kernel as called on macOS
-        def run(self, buffer_in, buffer_out, H, W, grid_pos, thread_pos):
-            self._kernel_pre() # Start with this call
-            
-            in_idx = grid_pos.x() * W + grid_pos.y()
-            out_idx = in_idx
-            log_msg = ("\t\tkernelCopy: %d %d %s %s" % (H, W, grid_pos, thread_pos))
-            buffer_out.set(out_idx, buffer_in.get(in_idx))
-
-            return self._kernel_post(log_msg) # End with this return
+    print("Test: %s" % vgpu.function_name())
    
     # Device
     device = vgpu.Device()
@@ -46,7 +31,7 @@ def testCopyKernel():
         buffer_in.set(i,i+10)
 
     # Create kernel and pipeline state
-    kernel = KernelCopy()
+    kernel = mcs.KernelCopy()
     kernel = vgpu.Kernel(kernel.run)
     pipeline_state = vgpu.PipelineState(kernel)
 
@@ -74,43 +59,9 @@ def testCopyKernel():
 
 
 # More complex workflow where we calculate x*x in one compute shader
-# and then add X to the result in another shader
-def test_x_times_x_plus_x():
-    print("Test: %s" % _fn_name())
-
-    class KernelXTimesX(vgpu.KernelObject):
-
-        def __init__(self):
-            super().__init__()
-
-        # GPU compute shader or kernel as called on macOS
-        def run(self, buffer_in, buffer_out, H, W, grid_pos, thread_pos):
-            self._kernel_pre() # Start with this call
-            
-            in_idx = grid_pos.x() * W + grid_pos.y()
-            out_idx = in_idx
-            x = buffer_in.get(in_idx)
-            buffer_out.set(out_idx, x*x)
-            log_msg = ("\tkernel_x_times_x: %d %d %s %s %d" % (H, W, grid_pos, thread_pos, x*x))
-
-            return self._kernel_post(log_msg) # End with this return
-
-    class KernelXPlusX(vgpu.KernelObject):
-
-        def __init__(self):
-            super().__init__()
-
-        # GPU compute shader or kernel as called on macOS
-        def run(self, buffer_in, buffer_out, H, W, grid_pos, thread_pos):
-            self._kernel_pre() # Start with this call
-            
-            in_idx = grid_pos.x() * W + grid_pos.y()
-            out_idx = in_idx
-            x = buffer_in.get(in_idx)
-            buffer_out.set(out_idx, x+x)
-            log_msg = ("\tkernel_x_plus_x: %d %d %s %s %d" % (H, W, grid_pos, thread_pos, x+x))
-
-            return self._kernel_post(log_msg) # End with this return
+# and then add value to itself in another shader
+def test_x_times_x_plus_x_times_2():
+    print("Test: %s" % vgpu.function_name())
 
     # Device
     device = vgpu.Device()
@@ -129,12 +80,12 @@ def test_x_times_x_plus_x():
         buffer_in.set(i,i)
 
     # Create kernel and pipeline state
-    kernelTimes = KernelXTimesX()
-    kernelPlus = KernelXPlusX()
+    kernelTimes = mcs.KernelXTimesX()
+    kernelTimes2 = mcs.KernelXTimes2()
     kernel_times = vgpu.Kernel(kernelTimes.run)
     pipeline_state_times = vgpu.PipelineState(kernel_times)
-    kernel_plus = vgpu.Kernel(kernelPlus.run)
-    pipeline_state_plus = vgpu.PipelineState(kernel_plus)
+    kernel_times2 = vgpu.Kernel(kernelTimes2.run)
+    pipeline_state_times2 = vgpu.PipelineState(kernel_times2)
 
     # Dispatch thread setup
     threadsPerThreadGroup = vgpu.Size(1, 1, 1)
@@ -156,29 +107,21 @@ def test_x_times_x_plus_x():
 
     encoder_times.dispatchThreads(threadsPerGrid, threadsPerThreadGroup)
 
-    encoder_plus = cmd_buf.computeCommandEncoder()
-    encoder_plus.setPipelinestate(pipeline_state_plus)
+    encoder_times2 = cmd_buf.computeCommandEncoder()
+    encoder_times2.setPipelinestate(pipeline_state_times2)
     
     # Set the arguments
-    encoder_plus.addArg(buffer_out)
-    encoder_plus.addArg(buffer_result)
-    encoder_plus.addArg(H)
-    encoder_plus.addArg(W)
+    encoder_times2.addArg(buffer_out)
+    encoder_times2.addArg(buffer_result)
+    encoder_times2.addArg(H)
+    encoder_times2.addArg(W)
 
-    encoder_plus.dispatchThreads(threadsPerGrid, threadsPerThreadGroup) 
+    encoder_times2.dispatchThreads(threadsPerGrid, threadsPerThreadGroup) 
 
     cmd_buf.submit()
 
-    cpu_result = [i*i+i*i for i in range(0,L)]
+    cpu_result = [i*i*2 for i in range(0,L)]
     assert( cpu_result == buffer_result.contents() )
-
-
-#
-# Local utility functions
-#
-
-def _fn_name():
-    return inspect.stack()[1][3]
 
 
 #
@@ -191,8 +134,8 @@ def main():
     # The simpliest of kernels - copy
     testCopyKernel()
 
-    # Two kernels run together: result = x * x + x
-    test_x_times_x_plus_x()
+    # Two kernels run together: result = x * x * 2
+    test_x_times_x_plus_x_times_2()
 
 if __name__ == "__main__":
     main()
