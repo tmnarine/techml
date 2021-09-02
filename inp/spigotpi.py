@@ -1,8 +1,8 @@
 #
 # spigotpi.py -- generate pi using the spigot algorithm
 #
-# http://www.cs.ox.ac.uk/jeremy.gibbons/publications/spigot.pdf
-# http://www.cut-the-knot.org/Curriculum/Algorithms/SpigotForPi.shtml
+# http://stanleyrabinowitz.com/bibliography/spigot.pdf
+# - contains Pascal version of the algorithm
 #
 
 import math
@@ -12,12 +12,28 @@ def pi_as_str():
     return "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679"
 
 
-def spigotpi(N, printResult):
+def spigotpi(N, printResult, debugInfo = False):
     print("Spigotpi N = %d" % N)
 
     assert(N > 0)
+
+    # lowlevel reduces the operation into smaller tasks that
+    # can be replicated in assembler
+    use_lowlevel = True
+
+    def calcLen():
+        if use_lowlevel:
+            result = 0
+            u = N
+            v = 0
+            while u >= 3:
+                u -= 3
+                v += 1
+            result += (v << 3) + (v << 2) + 1
+            
+        return math.floor(10 * N / 3) + 1
     
-    LEN = math.floor(10 * N / 3) + 1
+    LEN = calcLen()
     A = [2 for i in range(0,LEN)]
     
     nines = 0
@@ -25,13 +41,11 @@ def spigotpi(N, printResult):
 
     spigotpi_str = ""
 
-    use_lowlevel = True
-
     for j in range(1, N+1):
         q = 0
         for i in range(LEN, 0, -1):
 
-            def calcx():
+            def calcX():
                 if use_lowlevel:
                     result = 0
                     v = A[i-1]
@@ -55,7 +69,7 @@ def spigotpi(N, printResult):
                 
                 return x % (2 * i - 1)
 
-            def calcq():
+            def calcQ():
                 if use_lowlevel:
                     result = 0
                     v = i<<1
@@ -68,9 +82,9 @@ def spigotpi(N, printResult):
                         
                 return int(x / (2 * i -1))
             
-            x = calcx()
+            x = calcX()
             A[i-1] = calcPreviousA()
-            q = calcq()
+            q = calcQ()
 
         def calcA0():
             if use_lowlevel:
@@ -81,7 +95,7 @@ def spigotpi(N, printResult):
             
             return q % 10
 
-        def calcq2():
+        def calcQ2():
             if use_lowlevel:
                 result = 0
                 u = q >> 1
@@ -93,7 +107,7 @@ def spigotpi(N, printResult):
             return int(q / 10);
         
         A[0] = calcA0()
-        q = calcq2()
+        q = calcQ2()
 
         if 9 == q:
             nines += 1
@@ -106,6 +120,9 @@ def spigotpi(N, printResult):
             predigit = 0 if 10 == q else q
             if 10 != q:
                 nines = 0
+
+        if debugInfo:
+            print(A, spigotpi_str)
 
     spigotpi_str += ("%d" % (predigit))
 
@@ -131,7 +148,7 @@ def main():
     spigotpi(1, True)
     spigotpi(2, True)
     spigotpi(3, True)
-    spigotpi(25, True)
+    spigotpi(25, True, False)
     spigotpi(50, True)
     spigotpi(75, True)
     spigotpi(100, True)
