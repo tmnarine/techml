@@ -23,9 +23,9 @@ This error calculation is also useful in areas such as machine learning.  Compar
 Here is a simple [example](ml/rmse/rmse.py) that demonstrates the use of RMSE. A package like numpy will allow you to calculate RMSE in a few lines.
 
 ### Virtual GPU in Python
-It is an understatement to say that working with machine learning algorithms is complex.  I have found it useful to prototype various pieces of functionality in Python even before going to the shading language.  This example takes prototyping a step further and allows the simulation of a virtual GPU in Python running compute shaders.  Required objects such as Devices, Command Buffers, Buffers, Encoders and Compute Shaders can be implemented for simple GPGPU workflows.  Prototyping of GPU algorithms can be mocked up and run with the virtual GPU to aid learning/understanding and also to move work earlier in the development cycle. There are two Python files:
+It is an understatement to say that working with machine learning algorithms is complex.  I have found it useful to prototype various pieces of functionality in Python even before going to the shading language.  This example takes prototyping a step further and allows the simulation of a virtual GPU in Python running compute shaders.  Required objects such as Devices, Command Buffers, Buffers, Encoders and Compute Shaders can be implemented for simple GPGPU workflows.  Prototyping of GPU algorithms can be mocked up and run with the virtual GPU to aid learning/understanding and also to move work earlier in the development cycle. The example contains the following Python files:
 
-* [mgpu - main samples ](ml/vgpu/mgpu.py)
-* [mcs - main compute shaders ](ml/vgpu/mcs.py)
+* [mgpu - main tests](ml/vgpu/mgpu.py)
+* [mcs - main compute shaders](ml/vgpu/mcs.py)
 * [vgpu - a virtual GPU](ml/vgpu/vgpu.py)
 

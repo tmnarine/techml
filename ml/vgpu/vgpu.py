@@ -164,6 +164,25 @@ class Buffer:
     def stats(self):
         return (self.__reads, self.__writes)
 
+    def dump(self, title, colSize):
+        print(title)
+        for i in range(0,len(self.__buffer)):
+            if i != 0 and i % colSize == 0:
+                print("")
+            print(self.__buffer[i], " ", end="")
+        print()
+
+    def equals(self, buffer):
+        if self.size() != buffer.size():
+            return False
+        for i in range(0,self.size()):
+            if self.get(i) != buffer.get(i):
+                return False
+        return True
+
+    def notEquals(self, buffer):
+        return not self.equals(buffer)
+
 
 class Size:
 
@@ -260,6 +279,13 @@ class ComputeEncoder:
                   (threadsPerThreadGroup.x(), threadsPerThreadGroup.y(), threadsPerThreadGroup.z()))
             print("\tthreadsPerGrid(%d, %d, %d)" %
                   (threadsPerGrid.x(), threadsPerGrid.y(), threadsPerGrid.z()))
+            #
+            assert( isinstance(threadsPerThreadGroup.x(), int) )
+            assert( isinstance(threadsPerThreadGroup.y(), int) )
+            assert( isinstance(threadsPerThreadGroup.z(), int) )
+            assert( isinstance(threadsPerGrid.x(), int) )
+            assert( isinstance(threadsPerGrid.y(), int) )
+            assert( isinstance(threadsPerGrid.z(), int) )
         else:
             print("\tWarning: No pipelinestate set")
 

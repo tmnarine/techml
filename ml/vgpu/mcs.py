@@ -64,3 +64,48 @@ class KernelXTimes2(vgpu.KernelObject):
 
         return self._kernel_post(log_msg) # End with this return
 
+
+class KernelNCHW_2_NHWC(vgpu.KernelObject):
+
+    def __init__(self):
+        super().__init__()
+
+    @kernel
+    def run(self, buffer_in, buffer_out, N, C, H, W, grid_pos, thread_pos):
+        self._kernel_pre() # Start with this call
+
+        n = int(grid_pos.x() / C)
+        c = grid_pos.x() % C
+        h = grid_pos.y()
+        w = grid_pos.z()
+
+        in_idx = n * C * H * W + c * H * W + h * W + w
+        out_idx = n * H * W * C + h * W * C + w * C + c
+        log_msg = ("\t\tKernelNCHW2NHWC: %d %d %d %d %s %s %d %d %d %d : %d %d" %
+                    (N, C, H, W, grid_pos, thread_pos, n, c, h, w, in_idx, out_idx))
+        buffer_out.set(out_idx, buffer_in.get(in_idx))
+
+        return self._kernel_post(log_msg) # End with this return
+
+
+class KernelNHWC_2_NCHW(vgpu.KernelObject):
+
+    def __init__(self):
+        super().__init__()
+
+    @kernel
+    def run(self, buffer_in, buffer_out, N, C, H, W, grid_pos, thread_pos):
+        self._kernel_pre() # Start with this call
+  
+        n = int(grid_pos.x() / H)
+        h = int(grid_pos.x() % H)
+        w = grid_pos.y()
+        c = grid_pos.z()
+        in_idx = n * H * W * C + h * W * C + w * C + c
+        out_idx = n * C * H * W + c * H * W + h * W + w
+
+        log_msg = ("\t\tKernelNHWC2NCHW: %d %d %d %d %s %s %d %d %d %d : %d %d" %
+                    (N, C, H, W, grid_pos, thread_pos, n, c, h, w, in_idx, out_idx))
+        buffer_out.set(out_idx, buffer_in.get(in_idx))
+
+        return self._kernel_post(log_msg) # End with this return
