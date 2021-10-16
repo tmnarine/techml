@@ -13,8 +13,7 @@ def pi_as_str():
 
 
 def spigotpi(N, printResult, debugInfo = False):
-    print("Spigotpi N = %d" % N)
-
+    
     assert(N > 0)
 
     # lowlevel reduces the operation into smaller tasks that
@@ -135,12 +134,16 @@ def spigotpi(N, printResult, debugInfo = False):
     len_spigotpi_str = len(spigotpi_str)
     len_pi_str = len(pi_str)
     
+    # Output
+    ds = ("%d" % N)
+    spacing = (" "*(8-len(ds))) if len(ds) < 8 else ""
+    print("Spigotpi N = %s%s: " % (ds, spacing), end="")
+    
     check_len = len_spigotpi_str if len_spigotpi_str < len_pi_str else len_pi_str
     for i in range(0, check_len-1):
         assert(pi_str[i] == spigotpi_str[i+1])
         if printResult:
-            separator = "" if i == len(pi_str)-1 else "," 
-            print(spigotpi_str[i+1], separator, end="")
+            print("%s" % (spigotpi_str[i+1]), end="")
 
     print("")    
     
