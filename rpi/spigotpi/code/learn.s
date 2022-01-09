@@ -174,7 +174,8 @@ main:
 .global puts				@ C 
 .global printf				@ C
 
-@ Output is running ./bin/learn is:
+@ Run: ./bin/learn
+@ Output:
 @ Learn ARM assembler
 @ 32
 @ 50
