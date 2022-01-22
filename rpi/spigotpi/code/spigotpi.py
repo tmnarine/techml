@@ -35,6 +35,8 @@ def spigotpi(N, printResult, debugInfo = False):
     LEN = calcLen()
     A = [2 for i in range(0,LEN)]
     
+    # print("LEN: ",LEN)
+    
     nines = 0
     predigit = 0
 
