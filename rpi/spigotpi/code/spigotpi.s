@@ -7,14 +7,14 @@ PARAM1 .req r1
 PARAM2 .req r2
 
 @ Symbolic names for constants
-.set N, 25
-.set Alen, 1024
+.set N, 25        @ Number of digits of PI to find
+.set Alen, 1024   @ Number of float elements in A
 
 @ External functions
-.global puts				@ C 
-.global printf				@ C
+.global puts                @ C 
+.global printf              @ C
 
-@ Data section - variables, strings etc
+@ Data section - variables, strings etc. that allow modification
 .data
 
 saluation: .asciz "Find PI using an integer based method:"
@@ -42,9 +42,9 @@ crMsg: .asciz "\n"
 blankMsg: .asciz ""
 
 .balign 4
-A: .skip 4096 @ Array of Alen floats
+A: .skip 4096 @ float A[Alen]
 
-@ Text section - code
+@ Text section or code (no modifications allowed)
 .text
 
 printStr_FMTi:
@@ -107,9 +107,9 @@ main:
     bge VALID_N
     ldr FMT, =errStr
     bl printStr_FMTi
-	b END_MAIN
+    b END_MAIN
     
-    VALID_N:
+  VALID_N:
     
     @ LEN = math.floor(10 * N / 3) + 1
     mov PARAM0, #N
@@ -120,25 +120,27 @@ main:
     add PARAM1, #1
     
     ldr FMT, =intCrFmt
-	bl printStr_FMTi_PARAM1i_PARAM2i
-	
-	@ Check LEN (PARAM1) is < Alen
+    bl printStr_FMTi_PARAM1i_PARAM2i
+
+    @ Check LEN (PARAM1) is < Alen
     mov r0, PARAM1
     cmp r0, #Alen
     blt VALID_ALEN
     ldr FMT, =errStr
     bl printStr_FMTi
-	b END_MAIN
-	
-	VALID_ALEN:
-	
-	
-	
-	END_MAIN:
+    b END_MAIN
 
-	@ Reset r0 for no error code
+  VALID_ALEN:
+    
+    
+
+
+
+  END_MAIN:
+
+    @ Reset r0 for no error code
     mov r0, #0
-	
+
     @ Return to the address we were called from
     pop { lr }
     bx lr
