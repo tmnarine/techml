@@ -30,7 +30,7 @@ intFmt: .asciz "%d"
 intCrFmt: .asciz "%d\n"
 
 .balign 4
-intCommandFmt: .asciz "%d,"
+intCommaFmt: .asciz "%d,"
 
 .balign 4
 strIntFmt: .asciz "%s %d\n"
@@ -84,6 +84,25 @@ divmod_PARAM0i_PARAM1i_PARAM0o_PARAM2o:
     pop { lr }
     bx lr
 
+printIntArray_PARAM0i_PARAM1i:
+    push { lr }
+    @ body
+    mov r2, #0
+    print_loop:
+        cmp r2, r1
+        bgt end_print_loop
+        push { r0, r1, r2 }
+        ldr r1, [r0, +r2, LSL #2]
+        ldr r0, =intCommaFmt
+        bl printf
+        pop { r0, r1, r2 }
+        add r2, #1
+        b print_loop
+    end_print_loop:
+    pop { lr }
+    bx lr
+    
+    
 .global main
 .func main
 
@@ -119,8 +138,10 @@ main:
     bl multiply_by_10_PARAM0i_PARAM1o
     add PARAM1, #1
     
-    ldr FMT, =intCrFmt
-    bl printStr_FMTi_PARAM1i_PARAM2i
+    @push { PARAM1 }
+    @ldr FMT, =intCrFmt
+    @bl printStr_FMTi_PARAM1i_PARAM2i
+    @pop { PARAM1 }
 
     @ Check LEN (PARAM1) is < Alen
     mov r0, PARAM1
@@ -131,10 +152,65 @@ main:
     b END_MAIN
 
   VALID_ALEN:
+  
+    @ Store LEN in R3
+    mov r3, PARAM1
+    
+    @ Set array A[0..LEN] to 2s
+    mov r0, #0
+    ldr r1, =A
+    ARRAY_LOOP:
+        cmp r0, r3
+        bgt ARRAY_END
+        mov r2, #2
+        @ Address r1+4*r0 = r2
+        str r2, [r1, +r0, LSL #2]
+        add r0, #1
+        b ARRAY_LOOP
+    ARRAY_END:  
+    
+    mov r0, r1
+    mov r1, r3  
+    bl printIntArray_PARAM0i_PARAM1i
+
+    Areg .req r0
+    LENreg .req r1
+    NINESreg .req r3
+    PREDIGITreg .req r4
+    Jreg .req r5
+    Ireg .req r6
+    Qreg .req r7
+    Xreg .req r8
+    APREVreg .req r9
+    NPLUSONEreg .req r10
+    
+    mov NPLUSONEreg, #N
+    add NPLUSONEreg, #1
+    
+    mov Jreg, #0
+  START_LOOP_J:
+    cmp Jreg, NPLUSONEreg
+    beq END_LOOP_J
+    
+    mov Qreg, #0
+    
+    mov Ireg, LENreg
+  START_LOOP_I:
+    cmp Ireg, #-1
+    beq END_LOOP_I
     
     
-
-
+    sub Ireg, #1
+    
+    b START_LOOP_I
+    
+  END_LOOP_I:
+    
+    add Jreg, #1
+    b START_LOOP_J
+    
+  END_LOOP_J :   
+       
 
   END_MAIN:
 
