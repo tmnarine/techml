@@ -23,12 +23,13 @@ def spigotpi(N, printResult, debugInfo = False):
     def calcLen():
         if use_lowlevel:
             result = 0
-            u = N
+            u = (N << 3) + (N << 1)
             v = 0
             while u >= 3:
                 u -= 3
                 v += 1
-            result += (v << 3) + (v << 2) + 1
+            result += v + 1
+            return result
             
         return math.floor(10 * N / 3) + 1
     

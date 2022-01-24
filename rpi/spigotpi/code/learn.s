@@ -32,7 +32,7 @@ Array: .skip 400
 @ Functions have 3 parts:
 @ - Save the return address: push { lr }
 @ - body implementation
-@ - Restore the return address and branch to it: pop { lr } and bl lr
+@ - Restore the return address and branch to it: pop { lr } and bx lr
 
 @ r#i indicates an input
 @ r#o indicates and output
