@@ -12,14 +12,17 @@ all: spigotpi
 spigotpi: ./obj/spigotpi.o
 	gcc -o ./bin/$@ $+
 ```
+
+Place this text into a Makefile in the same directory as ```spigotpi.s``` and
+run: ```make```
+
 To run the application use: ```./bin/spigotpi```
 
 ### Note
 I was not sure what to expect regarding machine stability when coding
 in assembly.  I am happy to report though that the Raspberry Pi has 
-handled my programming errors such  as endless loops gracefully.  
-There seems to be no difference compared to working with regular 
-programming language.
+handled my programming errors such  as endless loops gracefully. There 
+seems to be no difference compared to working with regular  programming language.
 
 ## Summary
 
