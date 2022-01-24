@@ -30,7 +30,7 @@ first step.  Instead I took multiple steps to get to the final result:
 - Implement the Spigot Pi algorithm in Python
 - Add low level operations to the Python code that would mimick assembly 
 instructions.  For example, implementing division with a loop
-- Write my first assembly program to implement some of the function
+- Write my first assembly program to implement some of the functions
 that I will need for the final program.  For example, printing, div/mod
 math operations, initializing an array
 - Finally, implement the Spigot Pi algorithm in assembly using all that

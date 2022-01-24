@@ -1,5 +1,3 @@
-```
-
 ## Learning the basics of Assembler Programming
 
 Assembly programming is low level as you are working with registers, stacks
@@ -30,5 +28,3 @@ The reference found at the top of the source code is a good place to
 start learning how to program assembly on Rasberry Pi. In addition, there
 are some helpful comments within the code.
 
-
-```

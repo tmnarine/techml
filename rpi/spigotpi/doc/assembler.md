@@ -1,5 +1,3 @@
-```
-
 ## Assembler Implementation
 
 The assembly for the spigotpi algoritm is show below.  There is learning curve
@@ -27,4 +25,3 @@ Looping is also required in the algorithm and labels are placed in the code:
 ```
 Comments are interspersed in the code to help the reader.
 
-```

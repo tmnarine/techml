@@ -32,9 +32,15 @@ doc:
 	mv ../README.md /var/tmp
 	cat ../doc/intro.md > ../README.md
 	cat ../doc/python.md >> ../README.md
+	echo "```Python" >> ../README.md
 	cat ../code/spigotpi.py >> ../README.md
+	echo "```" >> ../README.md
 	cat ../doc/learn.md >> ../README.md
+	echo "```" >> ../README.md
 	cat ../code/learn.s >> ../README.md
+	echo "```" >> ../README.md
 	cat ../doc/assembler.md >> ../README.md
+	echo "```" >> ../README.md
 	cat ../code/spigotpi.s >> ../README.md
+	echo "```" >> ../README.md
 	cat ../doc/summary.md >> ../README.md

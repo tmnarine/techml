@@ -1,5 +1,3 @@
-```
-
 ## Building and Running
 
 The GNU tools are used to build the assembly application:
@@ -33,5 +31,4 @@ assembler.  It will not be best in all cases but learning assembly provides
 a good understanding of the low level operations of the Pi.  
 
 Happy Pi day!
-
 

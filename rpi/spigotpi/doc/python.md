@@ -36,7 +36,7 @@ def spigotpi(N, printResult, debugInfo = False):
         return math.floor(10 * N / 3) + 1
 ```
 
-The calcLen() function is embedded within spigotpi and it inherits the 
+The ```calcLen()``` function is embedded within ```spigotpi``` and it inherits the 
 ```use_lowlevel``` variable.  Although closures are not really needed
 for the Python implementation, I chose to write the code this way so 
 that the function implementation is very close to where it is called
@@ -70,4 +70,3 @@ let us know the algorithm failed.  Using assertions is something I take
 advantage of in my daily programming as it helps to check current
 and future changes to the code.
 
-```Python
