@@ -5,6 +5,9 @@ FMT .req r0
 PARAM0 .req r0
 PARAM1 .req r1
 PARAM2 .req r2
+VAARG0 .req r0
+VAARG1 .req r1
+
 
 @ Symbolic names for constants
 .set N, 25        @ Number of digits of PI to find
@@ -54,7 +57,7 @@ printStr_FMTi:
     pop { lr }
     bx lr
  
-printStr_FMTi_PARAM1i_PARAM2i:
+printStr_FMTi_VAARG0i:
     push { lr }
     @ body
     bl printf
@@ -105,7 +108,6 @@ printIntArray_PARAM0i_PARAM1i:
     
 .global main
 .func main
-
 main:
    @ Store the address we were called from
     push { lr }
@@ -118,13 +120,13 @@ main:
     ldr FMT, =strIntFmt
     ldr PARAM1, =nStr
     mov PARAM2, #N
-    bl printStr_FMTi_PARAM1i_PARAM2i
+    bl printStr_FMTi_VAARG0i
     
     @ Check N is >= 1
     mov r0, #N
     cmp r0, #1
-    bge VALID_N
-    ldr FMT, =errStr
+    bge VALID_N			@ Branch of >= 1
+    ldr FMT, =errStr	@ Else display error and go to end of main
     bl printStr_FMTi
     b END_MAIN
     

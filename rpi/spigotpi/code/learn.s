@@ -34,24 +34,25 @@ Array: .skip 400
 @ - body implementation
 @ - Restore the return address and branch to it: pop { lr } and bx lr
 
+@ Parameter notation used:
 @ r#i indicates an input
 @ r#o indicates and output
 
-print_str_r0i:
+print_str_r0i:      @ Put a string
     push { lr }
     @ body
     bl puts
     pop { lr }
     bx lr
     
-print_int_r0i_r1i:
+print_r0i_r1i:  @ Printf: format r0, arg ar1
     push { lr }
     @ body
     bl printf
     pop { lr }
     bx lr
     
-print_int_cr_r0i_r1i:
+print_cr_r0i_r1i: @Printf with \n: format r0, arg ar1
     push { lr }
     @ body
     bl printf
@@ -60,7 +61,7 @@ print_int_cr_r0i_r1i:
     pop { lr }
     bx lr
  
-print_int_array_r0i_r1i:
+print_int_array_r0i_r1i: @ Printf int array: array r0, size r1
     push { lr }
     @ body
     mov r2, #0
@@ -78,7 +79,7 @@ print_int_array_r0i_r1i:
     pop { lr }
     bx lr
         
-multiply_by_10_r0i:
+multiply_by_10_r0i: @ Multiply r0 by 10, return result in r1
     push { lr }
     @ body
     add r1, r0, LSL #3 
@@ -86,20 +87,21 @@ multiply_by_10_r0i:
     pop { lr }
     bx lr
     
-divmod_r0i_r1i_r0o_r2o:
-    push { lr }
+divmod_r0i_r1i_r0o_r2o: @ Divide r0/r1, return remained in r0
+    push { lr }         @ and result in r2
     @ body
     mov r2, #0
-    loop:
+    loop:               @ Loop start label
         cmp r0, r1
         blt end
         sub r0, r1
         add r2, #1
-        b loop
-    end:
+        b loop          @ Branch to label
+    end:                @ Loop end label
     pop { lr }
     bx lr
-    
+  
+@ Code that calls the subroutines
 .global main
 main:
     @ Store the address we were called from
@@ -117,13 +119,13 @@ main:
     ldr r1, =number
     @ Then load the number from the data address
     ldr r1, [r1]
-    bl print_int_cr_r0i_r1i
+    bl print_cr_r0i_r1i
     
     @ Muliply 5*10
     mov r0, #5
     bl multiply_by_10_r0i
     ldr r0, =intfmt
-    bl print_int_cr_r0i_r1i
+    bl print_cr_r0i_r1i
     
     @ Find the mod of 11/2
     mov r0, #11
@@ -131,7 +133,7 @@ main:
     bl divmod_r0i_r1i_r0o_r2o
     mov r1, r0
     ldr r0, =intfmt
-    bl print_int_cr_r0i_r1i
+    bl print_cr_r0i_r1i
     
     @ Find the div of 11/2
     mov r0, #11
@@ -139,7 +141,7 @@ main:
     bl divmod_r0i_r1i_r0o_r2o
     mov r1, r2
     ldr r0, =intfmt
-    bl print_int_cr_r0i_r1i
+    bl print_cr_r0i_r1i
     
     @ Set data Array to all 2s
     mov r0, #0
