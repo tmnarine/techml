@@ -31,4 +31,4 @@ It is an understatement to say that working with machine learning algorithms is 
 
 ### Work in progress
 
-[Raspberry Pi branch](tree/dev-pi/rpi/README.md)
+[Raspberry Pi branch](https://github.com/tmnarine/techml/tree/dev-pi/rpi/README.md)
