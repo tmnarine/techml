@@ -29,6 +29,6 @@ It is an understatement to say that working with machine learning algorithms is 
 * [mcs - main compute shaders](ml/vgpu/mcs.py)
 * [vgpu - a virtual GPU](ml/vgpu/vgpu.py)
 
-### Work in progress
+## Work in progress
 
 [Raspberry Pi branch](https://github.com/tmnarine/techml/tree/dev-pi/rpi/README.md)
