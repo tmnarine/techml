@@ -87,7 +87,7 @@ multiply_by_10_r0i: @ Multiply r0 by 10, return result in r1
     pop { lr }
     bx lr
     
-divmod_r0i_r1i_r0o_r2o: @ Divide r0/r1, return remained in r0
+divmod_r0i_r1i_r0o_r2o: @ Divide r0/r1, return remainer in r0
     push { lr }         @ and result in r2
     @ body
     mov r2, #0

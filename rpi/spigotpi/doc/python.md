@@ -42,7 +42,7 @@ This low level closure pattern repeats itself through the Python code.
 
 ### Assertions
 
-Asserting is a technique where a programmer can quickly see if the code is producing the right answer.  In the following ```for``` loop we check to make sure our result matches the well known PI value that is available on the web.
+Asserting is a technique where a programmer can quickly see if the code is producing the right answer.  In the following ```for``` loop we check to make sure our result matches the well known Pi value that is available on the web.
 
 ```Python
     for i in range(0, check_len-1):

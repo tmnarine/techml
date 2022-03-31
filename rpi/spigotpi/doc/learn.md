@@ -10,7 +10,7 @@ Assembly code can do many things such as:
 - Calculate using ```add``` and ```subtract```
 - Reference strings and data arrays
 
-In the ```learn.s``` module shown below, there are implementations of simple operations needed for the final Spigot PI assembly code.  The code is divided into two parts:
+In the ```learn.s``` module shown below, there are implementations of simple operations needed for the final Spigot Pi assembly code.  The code is divided into two parts:
 
 - .data : contains the strings and memory used for the
 application

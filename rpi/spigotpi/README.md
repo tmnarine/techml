@@ -1,4 +1,4 @@
-# Finding PI using Assembler
+# Finding Pi using Assembler
 
 As a software developer, I normally program in one of C++, Objective-C, Python or Swift.  Programming in assembler has been out of reach and over the years I only learned the very basics of reading assembly language. 
 
@@ -6,16 +6,16 @@ For the new and upcoming developers that may be reading this, assembly code is a
 
 After buying my Raspberry Pi about a year ago, I decided to make learning assembly one of my pandemic goals.  With various shutdowns in my part of the world I decided to follow through on my goal.  The Raspberry Pi makes learning assembly very easy as the standard GNU toolchain is available including the GNU assembler(GAS) along with an abundant supply of reference documentation on the web.
 
-Now all I had to do was decide on a project.  I had heard about integer methods for calculating the number PI and I looked this up on the web.  I thought that using integer math would be a good place to start as it avoids the complications of floating point operations. The specific method I came across is called the Spigot PI calculation.
+Now all I had to do was decide on a project.  I had heard about integer methods for calculating the number Pi and I looked this up on the web.  I thought that using integer math would be a good place to start as it avoids the complications of floating point operations. The specific method I came across is called the Spigot Pi calculation.
 
 ## Approach
 
 It would have been very difficult to write the assembly code as a first step.  Instead I took multiple steps to get to the final result:
 
-- Implement the Spigot PI algorithm in Python
+- Implement the Spigot Pi algorithm in Python
 - Add low level operations to the Python code that would mimick assembly instructions.  For example, implementing division with a loop
 - Write my first assembly program to implement some of the functions that I will need for the final program.  For example, printing, div/mod math operations, initializing an array
-- Finally, implement the Spigot PI algorithm in assembly using all that I have learned in the previous steps
+- Finally, implement the Spigot Pi algorithm in assembly using all that I have learned in the previous steps
 
 As you can see, a divide an conquer approach to writing the final assembly code was taken.
 
@@ -62,7 +62,7 @@ This low level closure pattern repeats itself through the Python code.
 
 ### Assertions
 
-Asserting is a technique where a programmer can quickly see if the code is producing the right answer.  In the following ```for``` loop we check to make sure our result matches the well known PI value that is available on the web.
+Asserting is a technique where a programmer can quickly see if the code is producing the right answer.  In the following ```for``` loop we check to make sure our result matches the well known Pi value that is available on the web.
 
 ```Python
     for i in range(0, check_len-1):
@@ -250,7 +250,7 @@ Assembly code can do many things such as:
 - Calculate using ```add``` and ```subtract```
 - Reference strings and data arrays
 
-In the ```learn.s``` module shown below, there are implementations of simple operations needed for the final Spigot PI assembly code.  The code is divided into two parts:
+In the ```learn.s``` module shown below, there are implementations of simple operations needed for the final Spigot Pi assembly code.  The code is divided into two parts:
 
 - .data : contains the strings and memory used for the
 application
@@ -350,7 +350,7 @@ multiply_by_10_r0i: @ Multiply r0 by 10, return result in r1
     pop { lr }
     bx lr
     
-divmod_r0i_r1i_r0o_r2o: @ Divide r0/r1, return remained in r0
+divmod_r0i_r1i_r0o_r2o: @ Divide r0/r1, return remainer in r0
     push { lr }         @ and result in r2
     @ body
     mov r2, #0
@@ -455,7 +455,7 @@ main:
 
 ## Assembler Implementation
 
-The assembly for the Spigot PI algoritm is show below.  There is learning curve to reading assembly code so I used the following to help:
+The assembly for the Spigot Pi algoritm is show below.  There is learning curve to reading assembly code so I used the following to help:
 
 - Symbolic names for registers : PARAM0 .req r0
 - Symbolic names for constants : .set N, 25
@@ -545,7 +545,6 @@ printStr_FMTi_VAARG0i:
     bl printf
     pop { lr }
     bx lr   
-    
     
 multiply_by_10_PARAM0i_PARAM1o:
     push { lr }
@@ -732,7 +731,7 @@ I was not sure what to expect regarding machine stability when coding in assembl
 
 ## Summary
 
-It is safe to say that implementing the Spigot PI algorithm in C or C++ would produce much better assembly code than the hand written implementation provided.  But in this case, the journey is the reward.  New and experienced developers can learn a great deal about how the Raspberry Pi operates by taking the plunge and writing code in assembler.  It will not be best in all cases but learning assembly provides a good understanding of the low level operations of the Raspberry Pi.
+It is safe to say that implementing the Spigot Pi algorithm in C or C++ would produce much better assembly code than the hand written implementation provided.  But in this case, the journey is the reward.  New and experienced developers can learn a great deal about how the Raspberry Pi operates by taking the plunge and writing code in assembler.  It will not be best in all cases but learning assembly provides a good understanding of the low level operations of the Raspberry Pi.
 
-Happy PI day!
+Happy Pi day!
 

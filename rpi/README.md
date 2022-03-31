@@ -1,3 +1,7 @@
-A collection of examples/demos for Raspberrypi.
+# Raspberry Pi
+Examples/demos for Raspberry Pi.
 
-Work in progress -- big release coming soon :-)
+## Samples
+
+### Spigot Pi in ARM 32 bit assembler
+A work in progress [example](spigotpi/README.md) that shows how to calculate Pi in Raspberry Pi 32 bit assembler.

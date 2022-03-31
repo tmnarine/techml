@@ -64,7 +64,6 @@ printStr_FMTi_VAARG0i:
     pop { lr }
     bx lr   
     
-    
 multiply_by_10_PARAM0i_PARAM1o:
     push { lr }
     @ body
