@@ -2,7 +2,7 @@
 
 As a software developer, I normally program in one of C++, Objective-C, Python or Swift.  Programming in assembler has been out of reach and over the years I only learned the very basics of reading assembly language. 
 
-For the new and upcoming developers that may be reading this, assembly code is a low level language that describes the operations to be executed on a central processing unit(CPU).  Compared to programming in a language like Python, you are no longer working with variables or arrays.  Instead you are working with CPU registers and memory and knowledge of low level computing operations becomes more important.
+For the new and upcoming developers that may be reading this, assembly code is a low level language that describes the operations to be executed on a central processing unit(CPU).  Compared to programming in a language like Python, you are no longer working with variables or arrays.  Instead you are working with CPU registers and memory and knowledge of low level computing operations becomes important.
 
 After buying my Raspberry Pi about a year ago, I decided to make learning assembly one of my pandemic goals.  With various shutdowns in my part of the world I decided to follow through on my goal.  The Raspberry Pi makes learning assembly very easy as the standard GNU toolchain is available including the GNU assembler(GAS) along with an abundant supply of reference documentation on the web.
 

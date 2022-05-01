@@ -10,18 +10,28 @@ The assembly for the Spigot Pi algoritm is show below.  There is learning curve 
 Along with explicit names for functions that include parameters, we use these such as:
 
 ```
-    mov PARAM0, #N
-    mov PARAM1, #3
-    bl divmod_PARAM0i_PARAM1i_PARAM0o_PARAM2o
+        @ LEN = math.floor(10 * N / 3) + 1
+        mov arg0, #N
+        mov arg1, #3
+        bl findDivMod
+        mov arg0, arg2
+        bl multiplyBy10
 ```
 
 Looping is also required in the algorithm and labels are placed in the code:
 
 ```
-    mov Jreg, #0
-  START_LOOP_J:
-    cmp Jreg, NPLUSONEreg
-    beq END_LOOP_J
+        mov j, #0
+        
+      START_LOOP_J:
+        mov r0, #N
+        add r0, #1
+        cmp j, r0
+        beq END_LOOP_J
+
+        @ Loop code
+        
+      END_LOOP_J:
 ```
 
 Comments are interspersed in the code to help the reader.
