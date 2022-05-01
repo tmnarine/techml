@@ -334,7 +334,8 @@ main:
         
       END_LOOP_J:
       
-      @ Output code
+        @ Output code
+        
         @ if 9 == q:
         cmp q, #9
         beq Q_EQUALS_9

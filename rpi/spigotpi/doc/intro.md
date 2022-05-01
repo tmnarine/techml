@@ -17,4 +17,4 @@ It would have been very difficult to write the assembly code as a first step.  I
 - Write my first assembly program to implement some of the functions that I will need for the final program.  For example, printing, div/mod math operations, initializing an array
 - Finally, implement the Spigot Pi algorithm in assembly using all that I have learned in the previous steps
 
-As you can see, a divide an conquer approach to writing the final assembly code was taken.
+A divide an conquer approach was taken to write the final assembly code.
