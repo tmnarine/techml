@@ -10,7 +10,7 @@ arg5 .req r5
 
 
 @ Symbolic names for constants
-.set N, 25          @ Number of digits of PI to find
+.set N, 05          @ Number of digits of PI to find
 .set A_LEN, 1024    @ Number of float elements in A
 .set DBG, 0         @ Emit debug info if set
 
@@ -25,9 +25,19 @@ saluation: .asciz "Find Pi on Raspberry Pi using an integer based method in ARM 
 
 nStr:  .asciz "N:"
 
-xStr:  .asciz "x:"
+lenStr:  .asciz "LEN:"
 
-iStr:  .asciz "i:"
+xStr:  .asciz " x"
+
+qStr:  .asciz " q"
+
+aPrevStr: .asciz " A[i-1]"
+
+aZeroStr: .asciz "A[0]"
+
+ninesStr: .asciz "nines:"
+
+predigitStr: .asciz "predigit:"
 
 errStr: .asciz "Exit on error"
 
@@ -38,10 +48,19 @@ intFmt: .asciz "%d"
 intCrFmt: .asciz "%d\n"
 
 .balign 4
+intsCrFmt: .asciz "%d %d\n"
+
+.balign 4
+intsFmt: .asciz "%d %d "
+
+.balign 4
 intCommaFmt: .asciz "%d,"
 
 .balign 4
 strIntFmt: .asciz "%s %d\n"
+
+.balign 4
+strIntFmt2: .asciz "%s %d "
 
 .balign 4
 crMsg: .asciz "\n"
@@ -89,8 +108,8 @@ printStrWithArgs:
 multiplyBy10:
     push { lr }
         @ body
+        mov arg1, #0
         add arg1, arg0, LSL #3 
-        add arg1, arg0, LSL #1
         add arg1, arg0, LSL #1
     pop { lr }
     bx lr
@@ -106,7 +125,7 @@ multiplyBy:
         push { arg1 }
         mov arg2, #0
         loopMultiplyBy:
-            cmp arg1, #-1
+            cmp arg1, #0
             beq endMultiplyBy
             add arg2, arg0
             sub arg1, #1
@@ -189,11 +208,31 @@ main:
         
         @ LEN = math.floor(10 * N / 3) + 1
         mov arg0, #N
+        bl multiplyBy10 @ Output in arg1
+        mov arg0, arg1
         mov arg1, #3
         bl findDivMod
         mov arg0, arg2
-        bl multiplyBy10
-        add arg1, #1
+        add arg0, #1
+        
+        @ Output LEN
+        push { arg0 }
+        mov arg2, arg0
+        ldr arg0, =strIntFmt
+        ldr arg1, =lenStr
+        bl printStrWithArgs
+        pop { arg0 }
+
+        @ Make alias for registers we will use multiple times
+        len .req r5
+        j   .req r6
+        i   .req r7
+        n   .req r8
+        q   .req r9
+        x   .req r10
+
+        @ Store LEN in its own register
+        mov len, arg0
         
         mov r0, #DBG
         cmp r0, #0
@@ -213,18 +252,7 @@ main:
         b END_MAIN
 
       VALID_A_LEN:
-      
-        @ Make alias for registers we will use multiple times
-        len .req r5
-        j   .req r6
-        i   .req r7
-        n   .req r8
-        q   .req r9
-        x   .req r10
-
-        @ Store LEN in its own register
-        mov len, arg1
-        
+              
         @ Set array A[0..LEN] to 2s
         mov i, #0
         ldr r1, =A
@@ -253,7 +281,7 @@ main:
         ldr r0, =predigit
         str r1, [r0]
         
-        mov j, #0
+        mov j, #1
         
       START_LOOP_J:
         mov r0, #N
@@ -268,6 +296,22 @@ main:
       START_LOOP_I:
         cmp i, #0
         beq END_LOOP_I
+
+        @ Output A[i-1]
+        ldr arg0, =A
+        mov r1, i
+        sub r1, #1
+        ldr arg0, [arg0, +r1, LSL#2]
+        mov arg2, arg0
+        ldr arg0, =strIntFmt2
+        ldr arg1, =aPrevStr
+        bl printStrWithArgs
+                
+        @ j, i
+        ldr r0, =intsFmt
+        mov r1, j
+        mov r2, i
+        bl printStrWithArgs
         
         @ x = (10 * A[i-1] + q * i)
         ldr arg0, =A
@@ -275,26 +319,21 @@ main:
         sub r1, #1
         ldr arg0, [arg0, +r1, LSL#2]
         bl multiplyBy10
+        
         mov x, arg1
         mov arg0, q
         mov arg1, i
         bl multiplyBy
         add x, arg2
         
-        @ A[i-1] = (x % (2 * i - 1))
-        mov r0, #DBG
-        cmp r0, #0
-        beq DBG3
-        ldr arg0, =strIntFmt
+        @ Output x
+        ldr arg0, =strIntFmt2
         ldr arg1, =xStr
         mov arg2, x
         bl printStrWithArgs
-        ldr arg0, =strIntFmt
-        ldr arg1, =iStr
-        mov arg2, i
-        bl printStrWithArgs
-      DBG3:
-        mov arg1, i, LSL#2
+        
+        @ A[i-1] = (x % (2 * i - 1))
+        mov arg1, i, LSL#1
         sub arg1, #1
         mov arg0, x
         bl findDivMod @ modulus returned in arg0
@@ -303,12 +342,24 @@ main:
         sub r2, #1
         str arg0, [r1, +r2, LSL #2]
         
+        @ Output A[i-1]
+        mov arg2, arg0
+        ldr arg0, =strIntFmt2
+        ldr arg1, =aPrevStr
+        bl printStrWithArgs
+        
         @ q = ( x / (2 * i -1))
-        mov arg1, i, LSL#2
+        mov arg1, i, LSL#1
         sub arg1, #1
         mov arg0, x
         bl findDivMod @ result returned in arg2
         mov q, arg2
+        
+        @ Output q
+        mov arg2, q
+        ldr arg0, =strIntFmt
+        ldr arg1, =qStr
+        bl printStrWithArgs
         
         @ i = i - 1
         sub i, #1
@@ -316,6 +367,10 @@ main:
         b START_LOOP_I
         
       END_LOOP_I:
+
+        @mov r1, q
+        @ldr r0, =intCrFmt
+        @bl printStrWithArgs
       
         @ A[0] = (q % 10)
         mov arg0, q
@@ -329,38 +384,112 @@ main:
         @ arg2 preserved still from findDivMod call
         mov q, arg2
         
+        @ Output A[0]
+        mov arg2, arg0
+        ldr arg0, =strIntFmt2
+        ldr arg1, =aZeroStr
+        bl printStrWithArgs
+        
+        @ Output q
+        mov arg2, q
+        ldr arg0, =strIntFmt
+        ldr arg1, =qStr
+        bl printStrWithArgs
+
+        @ Output code
+         
+        ldr arg0, =strIntFmt2
+        ldr arg1, =ninesStr
+        ldr arg2, =nines
+        ldr arg2, [arg2]
+        bl printStrWithArgs
+        
+        ldr arg0, =strIntFmt
+        ldr arg1, =predigitStr
+        ldr arg2, =predigit
+        ldr arg2, [arg2]
+        bl printStrWithArgs
+
+        @ if 9 == q: nines += 1
+        cmp q, #9
+        bne Q_NOT_EQUAL_9
+        ldr r0, =nines
+        ldr r0, [r0]
+        add r0, #1
+        ldr r1, =nines
+        str r0, [r1]
+      Q_NOT_EQUAL_9:
+      
+        @ else
+        @ newdigit = predigit+1 if 10 == q else predigit
+        ldr r1, =predigit
+        ldr r1, [r1]
+        cmp q, #10
+        bne Q_NOT_EQUAL_TO_10
+        add r1, #1
+      Q_NOT_EQUAL_TO_10:
+      
+        @ spigotpi_str += ("%d" % (newdigit))
+        ldr r0, =intFmt
+        bl printStrWithArgs
+        
+        @ newdigit = 0 if 10 == q else 9
+        mov r1, #0
+        cmp q, #10
+        beq Q_NOT_EQUAL_TO__10
+        mov r1, #9
+        ldr r3, =predigit
+        str r1, [r3]
+      Q_NOT_EQUAL_TO__10:
+        ldr r3, =nines
+        ldr r3, [r3]
+        mov r4, #0
+      K_LOOP_START:
+        cmp r4, r3
+        beq K_LOOP_DONE
+        push { r0 }
+        ldr r0, =intFmt
+        bl printStrWithArgs @ r1/predigit already set
+        pop { r0 }
+        add r4, #1
+        b K_LOOP_START
+      K_LOOP_DONE:
+
+        @ predigit = 0 if 10 == q else q
+        mov r0, #0
+        cmp q, #10
+        beq Q_EQUALS_10
+        mov r0, q
+      Q_EQUALS_10:
+        ldr r1, =predigit
+        str r0, [r1]
+        
+        @ if 10 != q: nines = 0
+        mov r0, #0
+        cmp q, #10
+        beq Q_EQUALS__10
+        ldr r1, =nines
+        str r0, [r1]
+      Q_EQUALS__10:
+      
+        ldr arg0, =strIntFmt2
+        ldr arg1, =ninesStr
+        ldr arg2, =nines
+        ldr arg2, [arg2]
+        bl printStrWithArgs
+        
+        ldr arg0, =strIntFmt
+        ldr arg1, =predigitStr
+        ldr arg2, =predigit
+        ldr arg2, [arg2]
+        bl printStrWithArgs
+           
         add j, #1
         b START_LOOP_J
         
       END_LOOP_J:
       
-        @ Output code
-        
-        @ if 9 == q:
-        cmp q, #9
-        beq Q_EQUALS_9
-        ldr r0, =nines
-        ldr r0, [r0]
-        add r0, #1
-        ldr r1, =nines
-        str r0, [r1, #0]
-      Q_EQUALS_9:
-        @ else
-        ldr r1, =predigit
-        cmp q, #10
-        bne Q_NOT_EQUAL_TO_10
-        add r1, #1
-      Q_NOT_EQUAL_TO_10:
-        ldr r0, =intCrFmt
-        bl printStrWithArgs
-        mov r0, #0
-        cmp q, #10
-        beq Q_NOT_EQUAL_TO__10
-        mov r0, #9
-      Q_NOT_EQUAL_TO__10:
-        
-
-      END_MAIN:
+    END_MAIN:
 
     @ Reset r0 for no error code
     mov r0, #0
