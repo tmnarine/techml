@@ -10,7 +10,7 @@ arg5 .req r5
 
 
 @ Symbolic names for constants
-.set N, 05          @ Number of digits of PI to find
+.set N, 5           @ Number of digits of PI to find
 .set A_LEN, 1024    @ Number of float elements in A
 .set DBG, 0         @ Emit debug info if set
 
@@ -297,6 +297,9 @@ main:
         cmp i, #0
         beq END_LOOP_I
 
+        mov r0, #DBG
+        cmp r0, #0
+        beq DBG3
         @ Output A[i-1]
         ldr arg0, =A
         mov r1, i
@@ -312,6 +315,7 @@ main:
         mov r1, j
         mov r2, i
         bl printStrWithArgs
+      DBG3:
         
         @ x = (10 * A[i-1] + q * i)
         ldr arg0, =A
@@ -326,11 +330,15 @@ main:
         bl multiplyBy
         add x, arg2
         
+        mov r0, #DBG
+        cmp r0, #0
+        beq DBG4
         @ Output x
         ldr arg0, =strIntFmt2
         ldr arg1, =xStr
         mov arg2, x
         bl printStrWithArgs
+      DBG4:
         
         @ A[i-1] = (x % (2 * i - 1))
         mov arg1, i, LSL#1
@@ -342,11 +350,15 @@ main:
         sub r2, #1
         str arg0, [r1, +r2, LSL #2]
         
+        mov r0, #DBG
+        cmp r0, #0
+        beq DBG5
         @ Output A[i-1]
         mov arg2, arg0
         ldr arg0, =strIntFmt2
         ldr arg1, =aPrevStr
         bl printStrWithArgs
+      DBG5:
         
         @ q = ( x / (2 * i -1))
         mov arg1, i, LSL#1
@@ -355,11 +367,15 @@ main:
         bl findDivMod @ result returned in arg2
         mov q, arg2
         
+        mov r0, #DBG
+        cmp r0, #0
+        beq DBG6
         @ Output q
         mov arg2, q
         ldr arg0, =strIntFmt
         ldr arg1, =qStr
         bl printStrWithArgs
+      DBG6:
         
         @ i = i - 1
         sub i, #1
@@ -367,10 +383,6 @@ main:
         b START_LOOP_I
         
       END_LOOP_I:
-
-        @mov r1, q
-        @ldr r0, =intCrFmt
-        @bl printStrWithArgs
       
         @ A[0] = (q % 10)
         mov arg0, q
@@ -384,6 +396,9 @@ main:
         @ arg2 preserved still from findDivMod call
         mov q, arg2
         
+        mov r0, #DBG
+        cmp r0, #0
+        beq DBG7
         @ Output A[0]
         mov arg2, arg0
         ldr arg0, =strIntFmt2
@@ -395,9 +410,13 @@ main:
         ldr arg0, =strIntFmt
         ldr arg1, =qStr
         bl printStrWithArgs
+       DBG7:
 
         @ Output code
          
+        mov r0, #DBG
+        cmp r0, #0
+        beq DBG8
         ldr arg0, =strIntFmt2
         ldr arg1, =ninesStr
         ldr arg2, =nines
@@ -409,6 +428,7 @@ main:
         ldr arg2, =predigit
         ldr arg2, [arg2]
         bl printStrWithArgs
+       DBG8:
 
         @ if 9 == q: nines += 1
         cmp q, #9
@@ -472,6 +492,9 @@ main:
         str r0, [r1]
       Q_EQUALS__10:
       
+        mov r0, #DBG
+        cmp r0, #0
+        beq DBG9
         ldr arg0, =strIntFmt2
         ldr arg1, =ninesStr
         ldr arg2, =nines
@@ -483,11 +506,17 @@ main:
         ldr arg2, =predigit
         ldr arg2, [arg2]
         bl printStrWithArgs
+       DBG9:
            
         add j, #1
         b START_LOOP_J
         
       END_LOOP_J:
+      
+        ldr r0, =intCrFmt
+        ldr r1, =predigit
+        ldr r1, [r1]
+        bl printStrWithArgs
       
     END_MAIN:
 
