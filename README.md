@@ -36,8 +36,8 @@ It is an understatement to say that working with machine learning algorithms is 
 
 This example contains a Python, R and ARM 32 bit Assembler version of the Spigot Pi algorithm.
 
-* [Python3](rpi/spigotpi/code/spigotpi.py)
-* [ARM 32 bit assembler](rpi/spigotpi/code/spigotpi.s)
-* [R] (rpi/spigotpi/code/spigotpi.R)
+* [spigotpi.py](rpi/spigotpi/code/spigotpi.py)
+* [spigotpi.s](rpi/spigotpi/code/spigotpi.s)
+* [spigotpi.R](rpi/spigotpi/code/spigotpi.R)
 
 
