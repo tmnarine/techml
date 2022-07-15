@@ -30,6 +30,14 @@ It is an understatement to say that working with machine learning algorithms is 
 * [mcs - main compute shaders](ml/vgpu/mcs.py)
 * [vgpu - a virtual GPU](ml/vgpu/vgpu.py)
 
-## Work in progress
+## Raspberry Pi
 
-[Raspberry Pi branch](https://github.com/tmnarine/techml/tree/dev-pi/rpi/README.md)
+### Spigot Pi algorithm implmentation in multiple languages
+
+This example contains a Python, R and ARM 32 bit Assembler version of the Spigot Pi algorithm.
+
+* [Python3](rpi/spigotpi/code/spigotpi.py)
+* [ARM 32 bit assembler](rpi/spigotpi/code/spigotpi.s)
+* [R] (rpi/spigotpi/code/spigotpi.R)
+
+
