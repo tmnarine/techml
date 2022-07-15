@@ -10,7 +10,7 @@ arg5 .req r5
 
 
 @ Symbolic names for constants
-.set N, 5           @ Number of digits of PI to find
+.set N, 45          @ Number of digits of PI to find
 .set A_LEN, 1024    @ Number of float elements in A
 .set DBG, 0         @ Emit debug info if set
 
@@ -102,7 +102,7 @@ printStrWithArgs:
     bx lr   
     
 @ Args:
-@   int : arg0 
+@   int : arg0
 @   int : arg1 result
 @
 multiplyBy10:
@@ -438,6 +438,7 @@ main:
         add r0, #1
         ldr r1, =nines
         str r0, [r1]
+        b OVER_ELSE
       Q_NOT_EQUAL_9:
       
         @ else
@@ -461,17 +462,19 @@ main:
         ldr r3, =predigit
         str r1, [r3]
       Q_NOT_EQUAL_TO__10:
+        
+        @ for k in range(0, nines): spigotpi_str += ("%d" % (newdigit))
         ldr r3, =nines
         ldr r3, [r3]
         mov r4, #0
       K_LOOP_START:
         cmp r4, r3
         beq K_LOOP_DONE
-        push { r0 }
+        push { r3 }
         ldr r0, =intFmt
         bl printStrWithArgs @ r1/predigit already set
-        pop { r0 }
         add r4, #1
+        pop { r3 }
         b K_LOOP_START
       K_LOOP_DONE:
 
@@ -491,6 +494,8 @@ main:
         ldr r1, =nines
         str r0, [r1]
       Q_EQUALS__10:
+      
+      OVER_ELSE:
       
         mov r0, #DBG
         cmp r0, #0

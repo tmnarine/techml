@@ -19,7 +19,7 @@ clean:
 	rm ./bin/spigotpi ./bin/learn ./obj/*.o
 	
 run: all
-	./bin/run
+	python3 check_spigotpi_assembler.py
 	
 runpy: 
 	python3 spigotpi.py
