@@ -32,12 +32,14 @@ It is an understatement to say that working with machine learning algorithms is 
 
 ## Raspberry Pi
 
-### Spigot Pi algorithm implmentation in multiple languages
+### Spigot Pi implementation in multiple languages
 
-This example contains a Python, R and ARM 32 bit Assembler version of the Spigot Pi algorithm.
+This example contains a Python, R and ARM 32 bit Assembler version of the Spigot Pi algorithm.  The Spigot Pi algorithm is a well known integer based method for calculating the Pi value.
 
 * [spigotpi.py](rpi/spigotpi/code/spigotpi.py)
 * [spigotpi.s](rpi/spigotpi/code/spigotpi.s)
 * [spigotpi.R](rpi/spigotpi/code/spigotpi.R)
+
+R is a language that is used for statistics and data analysis.  The R example provides a non trivial solution that a developer could start with and could compare with the Python version for learning.
 
 
