@@ -30,17 +30,17 @@ runlearn: all
 # Build the README.md from the code and other .md files	
 doc:
 	mv ../README.md /var/tmp
-	cat ../doc/intro.md > ../README.md
-	cat ../doc/python.md >> ../README.md
+	cat ../docs/intro.md > ../README.md
+	cat ../docs/python.md >> ../README.md
 	echo \`\`\`Python >> ../README.md
 	cat ../code/spigotpi.py >> ../README.md
 	echo \`\`\` >> ../README.md
-	cat ../doc/learn.md >> ../README.md
+	cat ../docs/learn.md >> ../README.md
 	echo \`\`\` >> ../README.md
 	cat ../code/learn.s >> ../README.md
 	echo \`\`\` >> ../README.md
-	cat ../doc/assembler.md >> ../README.md
+	cat ../docs/assembler.md >> ../README.md
 	echo \`\`\` >> ../README.md
 	cat ../code/spigotpi.s >> ../README.md
 	echo \`\`\` >> ../README.md
-	cat ../doc/summary.md >> ../README.md
+	cat ../docs/summary.md >> ../README.md

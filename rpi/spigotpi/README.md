@@ -112,8 +112,7 @@ def spigotpi(N, printResult, debugInfo = False):
     LEN = calcLen()
     A = [2 for i in range(0,LEN)]
     
-    print("N: ", N)
-    print("LEN: ",LEN)
+    # print("LEN: ",LEN)
     
     nines = 0
     predigit = 0
@@ -161,16 +160,9 @@ def spigotpi(N, printResult, debugInfo = False):
                         
                 return int(x / (2 * i -1))
             
-            print(" A[i-1] ",A[i-1]," ",end="")
-            
             x = calcX()
             A[i-1] = calcPreviousA()
             q = calcQ()
-            
-            print(j,i,end="")
-            print(" x",x,end="")
-            print(" A[i-1]",A[i-1],end="")
-            print(" q",q)
 
         def calcA0():
             if use_lowlevel:
@@ -194,41 +186,21 @@ def spigotpi(N, printResult, debugInfo = False):
         
         A[0] = calcA0()
         q = calcQ2()
-        
-        print("A[0]",A[0],end="")
-        print(" q",q)
 
-        # import pdb; pdb.set_trace()
-        
-        if True:
-            print("nines: ",nines,"predigit: ",predigit,end="")
-            if 9 == q:
-                nines += 1
-                print("")
-            else:
-                newdigit = predigit+1 if 10 == q else predigit
-                spigotpi_str += ("%d" % (newdigit))
-                print(" newdigit: ",newdigit," ")
-                newdigit = 0 if 10 == q else 9
-                for k in range(0, nines):
-                    spigotpi_str += ("%d" % (newdigit))
-                predigit = 0 if 10 == q else q
-                if 10 != q:
-                    nines = 0
-            print("nines: ",nines,"predigit: ",predigit)
+        if 9 == q:
+            nines += 1
         else:
-            print("j: ",j,"q: ",q,"nines: ",nines,"predigit: ",predigit)
-            if 9 == q:
-                nines += 1
-                print("") 
-            else:
-                predigit = 0 if 10 == q else q
-                if 10 != q:
-                    nines = 0
-            print("j: ",j,"q: ",q,"nines: ",nines,"predigit: ",predigit)
+            newdigit = predigit+1 if 10 == q else predigit
+            spigotpi_str += ("%d" % (newdigit))
+            newdigit = 0 if 10 == q else 9
+            for k in range(0, nines):
+                spigotpi_str += ("%d" % (newdigit))
+            predigit = 0 if 10 == q else q
+            if 10 != q:
+                nines = 0
 
-            if debugInfo:
-                print(A, spigotpi_str)
+        if debugInfo:
+            print(A, spigotpi_str)
 
     spigotpi_str += ("%d" % (predigit))
 
@@ -255,8 +227,6 @@ def spigotpi(N, printResult, debugInfo = False):
     print("")    
     
 def main():
-    spigotpi(15, True, False)
-    return
     spigotpi(1, True)
     spigotpi(2, True)
     spigotpi(3, True)
@@ -509,7 +479,7 @@ main:
 
 ## Assembler Implementation
 
-The assembly for the Spigot Pi algoritm is show below.  There is learning curve to reading assembly code so I used the following to help:
+The assembly for the Spigot Pi algorithm is show below.  There is learning curve to reading assembly code so I used the following to help:
 
 - Symbolic names for registers : PARAM0 .req r0
 - Symbolic names for constants : .set N, 25
@@ -1098,6 +1068,22 @@ main:
 
 ```
 
+A close reading of the assembly code will show that operations such as ```add``` always happen within a register.  The ARM architecture is referred to as ```load and store``` where values must be loaded into registers before operations can be run.
+
+Other operations of interest to look at include saving and restoring registers and initializing variables.
+
+To save a register's state, call ```push { arg0 }``` and later restore with ```pop { arg0 }```.
+
+Updating a variable in memory will use registers in the following way:
+
+```
+        @ nines = 0 predigit = 0
+        mov r1, #0          @ Zero value stored in register r1
+        ldr r0, =nines      @ Load the address of the nines variable
+        str r1, [r0]        @ Store r1 into the nines address
+        ldr r0, =predigit   @ Load the address of the predigit variable
+        str r1, [r0]        @ Store r1 into the predigit variable
+```
 
 ## Building and Running
 
@@ -1123,5 +1109,5 @@ I was not sure what to expect regarding machine stability when coding in assembl
 
 ## Summary
 
-It is safe to say that implementing the Spigot Pi algorithm in C or C++ would produce much better assembly code than the hand written implementation provided.  It is often though that the journey is the reward.  New and experienced developers can learn a great deal about how the Raspberry Pi operates by taking the plunge and writing code in assembly.  It will not be best in all cases but learning assembly provides a good understanding of the low level operations of the Raspberry Pi. Having this knowledge as a part of your toolset can greatly assist your debugging  when you encounter issues where the high level source code being executed is not available.
+It is safe to say that implementing the Spigot Pi algorithm in C or C++ would produce much better assembly code than the hand written implementation provided above.  It is often the case though, that the journey is the reward.  New and experienced developers can learn a great deal about how the Raspberry Pi operates by taking the step up to writing code in assembly.  It will not be best in all cases but learning assembly provides a good understanding of the low level operations of the Raspberry Pi. Having this knowledge as a part of your toolset can greatly assist your debugging skills. Developers often encounter issues where the high level source code is not available and must rely on the low level to figure out what has gone wrong.
 

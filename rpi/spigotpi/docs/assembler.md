@@ -2,7 +2,7 @@
 
 ## Assembler Implementation
 
-The assembly for the Spigot Pi algoritm is show below.  There is learning curve to reading assembly code so I used the following to help:
+The assembly for the Spigot Pi algorithm is show below.  There is learning curve to reading assembly code so I used the following to help:
 
 - Symbolic names for registers : PARAM0 .req r0
 - Symbolic names for constants : .set N, 25
