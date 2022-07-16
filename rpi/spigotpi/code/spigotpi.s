@@ -1,4 +1,9 @@
-@ Convert the spigotpi.py Python code to Rasberry Pi assembler
+@ Convert the spigotpi.py Python code to Rasberry Pi 32 bit assembler
+
+@ Outstanding issues:
+@ 1. Result is incorrect soon after the 45th digit.  Seeing an extra 0 and could be the
+@ result of an incorrect loop.
+@ 2. Code cleanup: arg# versus r#, output code
 
 @ Symbolic names for registers to aid readability
 arg0 .req r0
