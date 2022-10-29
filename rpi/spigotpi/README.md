@@ -565,12 +565,6 @@ nStr:  .asciz "N:"
 
 lenStr:  .asciz "LEN:"
 
-
-
-
-
-
-
 errStr: .asciz "Exit on error"
 
 .balign 4
@@ -868,9 +862,7 @@ main:
         @ arg2 preserved still from findDivMod call
         mov q, arg2
         
-
         @ Output code
-         
 
         @ if 9 == q: nines += 1
         cmp q, #9

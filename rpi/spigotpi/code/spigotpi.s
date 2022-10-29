@@ -32,17 +32,17 @@ nStr:  .asciz "N:"
 lenStr:  .asciz "LEN:"
 
 xStr:  .asciz " x"                      @DBG
-
+                                        @DBG
 qStr:  .asciz " q"                      @DBG
-
+                                        @DBG
 aPrevStr: .asciz " A[i-1]"              @DBG
-
+                                        @DBG
 aZeroStr: .asciz "A[0]"                 @DBG
-
+                                        @DBG
 ninesStr: .asciz "nines:"               @DBG
-
+                                        @DBG
 predigitStr: .asciz "predigit:"         @DBG
-
+                                        @DBG
 errStr: .asciz "Exit on error"
 
 .balign 4
@@ -419,9 +419,9 @@ main:
         ldr arg1, =qStr                 @DBG
         bl printStrWithArgs             @DBG
        DBG7:                            @DBG
-
+                                        @DBG
         @ Output code
-         
+                                        @DBG
         mov r0, #DBG                    @DBG
         cmp r0, #0                      @DBG
         beq DBG8                        @DBG
