@@ -44,3 +44,5 @@ doc:
 	cat ../code/spigotpi.s >> ../README.md
 	echo \`\`\` >> ../README.md
 	cat ../docs/summary.md >> ../README.md
+	cp ../README.md /tmp/README.md__
+	grep -v @DBG /tmp/README.md__ > ../README.md
