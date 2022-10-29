@@ -565,17 +565,11 @@ nStr:  .asciz "N:"
 
 lenStr:  .asciz "LEN:"
 
-xStr:  .asciz " x"
 
-qStr:  .asciz " q"
 
-aPrevStr: .asciz " A[i-1]"
 
-aZeroStr: .asciz "A[0]"
 
-ninesStr: .asciz "nines:"
 
-predigitStr: .asciz "predigit:"
 
 errStr: .asciz "Exit on error"
 

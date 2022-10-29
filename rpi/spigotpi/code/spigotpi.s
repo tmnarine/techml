@@ -31,17 +31,17 @@ nStr:  .asciz "N:"
 
 lenStr:  .asciz "LEN:"
 
-xStr:  .asciz " x"
+xStr:  .asciz " x"                      @DBG
 
-qStr:  .asciz " q"
+qStr:  .asciz " q"                      @DBG
 
-aPrevStr: .asciz " A[i-1]"
+aPrevStr: .asciz " A[i-1]"              @DBG
 
-aZeroStr: .asciz "A[0]"
+aZeroStr: .asciz "A[0]"                 @DBG
 
-ninesStr: .asciz "nines:"
+ninesStr: .asciz "nines:"               @DBG
 
-predigitStr: .asciz "predigit:"
+predigitStr: .asciz "predigit:"         @DBG
 
 errStr: .asciz "Exit on error"
 
