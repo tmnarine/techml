@@ -14,8 +14,8 @@ arg5 .req r5
 
 
 @ Symbolic names for constants
-.set N, 100         @ Number of digits of PI to find
-.set A_LEN, 1024    @ Number of float elements in A
+.set N, 256         @ Number of digits of PI to find
+.set A_LEN, 2048    @ Number of float elements in A
 .set DBG, 0         @ Emit debug info if set
 
 @ External functions
