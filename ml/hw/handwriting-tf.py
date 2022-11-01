@@ -3,6 +3,11 @@
 #
 # Work in progress:
 # - Tensorflow/Keras hookup still to be done
+#
+# Commands to setup:
+# python -m venv ./pygenv
+# pip3 install pygame
+#
 
 import pygame
 
