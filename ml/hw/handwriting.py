@@ -7,15 +7,25 @@
 # Commands to setup:
 # python -m venv ./pygenv
 # pip3 install pygame
+# pip3 install tensorflow
+# pip3 install keras
 #
 
 import pygame
 
+use_tf = False
+if use_tf:
+    import tensorflow as tf
+    from keras.datasets import minst
+
+
 class DrawGrid:
 
-    H = 800
-    W = 600
     DIVISIONS = 3 # grid divisions
+    K = 28
+    H = K*10*DIVISIONS
+    W = K*10*DIVISIONS
+    IMG_SIZE = (K, K)
 
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
@@ -33,6 +43,10 @@ class DrawGrid:
         self.lines = []
         self.lineUpdate = False
         self.drawing = False
+        self.afterMouseUp = False
+        
+        if use_tf:
+            self.init_tf()
 
     def updateCaption(self):
         caption = self.TITLE + str(self.input)
@@ -47,6 +61,11 @@ class DrawGrid:
         while running:
             # Draw
             self.drawGrid( self.DIVISIONS, True )
+            # Extract images
+            if self.afterMouseUp and not self.drawing:
+                self.extractImages()
+                self.afterMouseUp = False
+            #
             if self.lineUpdate:
                 self.drawLines(self.lines)
                 self.lineUpdate = False
@@ -67,6 +86,7 @@ class DrawGrid:
                 elif event.type == pygame.MOUSEMOTION and self.drawing:
                     self.points.append(event.pos)
                 elif event.type == pygame.MOUSEBUTTONUP:
+                    self.afterMouseUp = True
                     self.points.append(event.pos)
                     if self.drawing:
                         self.lines.append(self.points)
@@ -76,6 +96,37 @@ class DrawGrid:
                         
         self.done()
 
+    def init_tf(self):
+        pass
+        
+    def extractImages(self):
+        debug = True
+        surface = pygame.display.get_surface().copy()
+        subsurfaces = []
+        crects = []
+        views = []
+        # Left, top, width, height
+        rh = self.H/self.DIVISIONS
+        wh = self.W/self.DIVISIONS
+        for i in range(0, self.DIVISIONS):
+            for j in range(0, self.DIVISIONS):
+                crect = pygame.Rect(0, 0, rh, wh)
+                crect.move_ip(i*rh, j*wh)
+                subsurface = surface.subsurface(crect)
+                small_surface =  pygame.transform.scale(subsurface, self.IMG_SIZE)
+                view = small_surface.get_view('3')
+                subsurfaces.append(subsurface)
+                crects.append(crect)
+                views.append(view)
+                #
+                if debug:
+                    print("H %d W %d BYTES: %d" % (small_surface.get_height(), small_surface.get_width(), small_surface.get_bytesize()))
+                    print("\tview %d\n" % (view.length))
+
+        if debug:
+            #pygame.display.get_surface().blit(subsurfaces[0], crects[-1])
+            pass
+    
     def createWindow(self, name, h, w, color):
         self.screen = pygame.display.set_mode((h, w))
         self.setBackground(color)
