@@ -14,12 +14,14 @@
 # Once environment is set  you can run with: python handwriting.py
 #
 # Notes:
-# Tensorflow model is trained everytime on startup
+# Tensorflow model is trained the first time code runs.
+# The model will be saved first time and loaded on subsequent runs.
 # Lower case u will undo the last drawn line
 # Tested on Windows
 # Used a CPU version of Tensorflow
 #
 
+import os
 import pygame
 
 try:
@@ -41,8 +43,18 @@ except:
 
 class MnistInference:
 
+    MODEL_NAME = "./hwmodel"
+
     def __init__(self):
         print("# Initializing tensorflow")
+
+        if os.path.exists(self.MODEL_NAME):
+            print("# Loading model: %s" %(self.MODEL_NAME))
+            self.network = tf.keras.models.load_model(self.MODEL_NAME)
+        else:
+            self.buildModel(True)
+
+    def buildModel(self, saveModel):
 
         (self.train_images, self.train_labels), (self.test_images, self.test_labels) = mnist.load_data()
 
@@ -67,6 +79,10 @@ class MnistInference:
 
         test_loss, test_accuracy = self.network.evaluate(self.test_images, self.test_labels)
         print("# test_loss %g test_accuracy %g" % (test_loss, test_accuracy))
+
+        if saveModel:
+            print("# Saving model: %s" %(self.MODEL_NAME))
+            self.network.save(self.MODEL_NAME)
 
         # self.debugDisplaySomeImages()
        
