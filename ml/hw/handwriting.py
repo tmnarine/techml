@@ -1,9 +1,8 @@
 # Simple canvas for entering numbers that will
 # be passed to Tensorflow for inference.
 # Accurracy is low and seems to have trouble with
-# numbers like 9.  The drawing of the lines
-# is very simple and would need improvement
-# to fix this.
+# numbers like 9.  The line drawing code is very
+# simple and would probably need to be improved.
 #
 # Commands to setup:
 # python -m venv ./winenv
@@ -14,7 +13,11 @@
 #
 # Once environment is set  you can run with: python handwriting.py
 #
+# Notes:
+# Tensorflow model is trained everytime on startup
 # Lower case u will undo the last drawn line
+# Tested on Windows
+# Used a CPU version of Tensorflow
 #
 
 import pygame
@@ -65,12 +68,7 @@ class MnistInference:
         test_loss, test_accuracy = self.network.evaluate(self.test_images, self.test_labels)
         print("# test_loss %g test_accuracy %g" % (test_loss, test_accuracy))
 
-        # Debugging
-        if False:
-            for idx in range(0,10):
-                print("# test label %s", self.train_labels[idx]);
-                print(self.train_images[idx])
-                self.displayImage(True, idx)
+        # self.debugDisplaySomeImages()
        
     def predictOneImage(self, nparray):
         predictions = None
@@ -97,6 +95,11 @@ class MnistInference:
         plt.imshow(im, cmap=plt.cm.binary)
         plt.show()       
 
+    def debugDisplaySomeImages(self):
+        for idx in range(0,10):
+            print("# test label %s", self.train_labels[idx]);
+            print(self.train_images[idx])
+            self.displayImage(True, idx)
 
 #
 # Grid screen class to handle input and display
@@ -115,6 +118,12 @@ class DrawGrid:
     RED = (255, 0, 0)
     GRAY = (127, 127, 127)
     WHITE = (255, 255, 255)
+
+    # Line width is an important variable to
+    # set correctly.  As the image will be
+    # scaled down below a width that won't
+    # make the character disappear is needed
+    LINE_WIDTH = 20
 
     TITLE = "Hand writing input:  "
 
@@ -188,9 +197,8 @@ class DrawGrid:
         debug = False
         pygame.display.update()
         surface = pygame.display.get_surface().copy()
-        subsurfaces = []
-        smallsufaces = []
-        crects = []
+        firstsmallsurface = None
+        lastcrect = None
         # Reset the input string
         self.input = []
         # Left, top, width, height
@@ -207,7 +215,7 @@ class DrawGrid:
                 # Reduce the surface to the prediction image size we need
                 # Smooth scale is used as it averages pixels as it collapses the image
                 small_surface =  pygame.transform.smoothscale(subsurface, self.IMG_SIZE)
-                nprgb = pygame.surfarray.array_red(small_surface)
+                nprgb  = pygame.surfarray.array_red(small_surface)
                 nprgb += pygame.surfarray.array_green(small_surface)
                 nprgb += pygame.surfarray.array_blue(small_surface)
                 nprgb = nprgb / 3.0
@@ -215,40 +223,56 @@ class DrawGrid:
                 nprgb = np.fliplr(nprgb)
                 nprgb = np.rot90(nprgb)
                 nprgb = nprgb.astype('float32') / 255.0
-                nprgb = nprgb.reshape(1, nprgb.shape[0]*nprgb.shape[1])
                 #
                 if debug:
-                    # nprgb = pygame.surfarray.array_red(subsurface) + pygame.surfarray.array_green(subsurface) + pygame.surfarray.array_blue(subsurface)
-                    # nprgb = nprgb / 3.0
-                    # nprgb = np.fliplr(nprgb)
-                    # nprgb = np.rot90(nprgb)
-                    # self.mnist.displayArrayImage(nprgb, 272, 272)
+                    # self.displaySurface(subsurface)
                     self.mnist.displayArrayImage(nprgb)
                     print(nprgb)
-                    subsurfaces.append(subsurface)
-                    smallsufaces.append(small_surface)
-                    crects.append(crect)
+                    # Track debug vars
+                    if not firstsmallsurface:
+                        firstsmallsurface = small_surface
+                    lastcrect = crect
                     print("H %d W %d BYTES: %d" % (small_surface.get_height(), small_surface.get_width(), small_surface.get_bytesize()))
-                #
-                if self.mnist:
-                    predictions = self.mnist.predictOneImage(nprgb)
-                    # print("# prediction: ", predictions, predictions.shape)
-                    max_idx = -1
-                    maximum = 0
-                    for p in range(0, len(predictions[0])):
-                        if predictions[0,p] > maximum:
-                            max_idx = p
-                            maximum = predictions[0,p]
-                    if maximum > 0.4:
-                        # print("#### ",max_idx)
-                        self.input.append(" " + str(max_idx) + " ")
-                    else:
-                        self.input.append(" - ")
-
+                # Run the prediction on the nprgb image colour array
+                num = self.predicateImageNumber(nprgb)
+                if num < 0:
+                    self.input.append(" - ")
+                else:
+                    self.input.append(" " + str(num) + " ")
+                    
         self.updateCaption()
         
         if debug:
-            pygame.display.get_surface().blit(smallsufaces[0], crects[-1])
+            # Blit of first grid image to the last position
+            pygame.display.get_surface().blit(firstsmallsurface, lastcrect)
+
+    def displaySurface(self, surface):
+        nprgb  = pygame.surfarray.array_red(surface)
+        nprgb += pygame.surfarray.array_green(surface)
+        nprgb += pygame.surfarray.array_blue(surface)
+        nprgb = nprgb / 3.0
+        nprgb = np.fliplr(nprgb)
+        nprgb = np.rot90(nprgb)
+        self.mnist.displayArrayImage(nprgb, 272, 272)       
+
+    def predicateImageNumber(self, nprgb):
+        if self.mnist:
+            debug = False
+            # Reshape so image can be passed to predictor
+            nprgb = nprgb.reshape(1, nprgb.shape[0]*nprgb.shape[1])
+            predictions = self.mnist.predictOneImage(nprgb)
+            if debug: print("# prediction: ", predictions, predictions.shape)
+            max_idx = -1
+            maximum = 0
+            for p in range(0, len(predictions[0])):
+                if predictions[0,p] > maximum:
+                    max_idx = p
+                    maximum = predictions[0,p]
+            if maximum > 0.4:
+                if debug: print("#### ",max_idx)
+                return max_idx
+
+        return -1 
             
     def createWindow(self, name, h, w, color):
         self.screen = pygame.display.set_mode((h, w))
@@ -275,8 +299,7 @@ class DrawGrid:
     def drawLines(self, lines):
         for line in self.lines:
             # print(line)
-            width = 14
-            pygame.draw.lines(self.screen, self.lineColour, False, line, width)
+            pygame.draw.lines(self.screen, self.lineColour, False, line, self.LINE_WIDTH)
        
     def done(self):
         pygame.quit()
