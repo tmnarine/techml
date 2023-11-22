@@ -66,6 +66,9 @@ class MnistInference:
 
         self.network = models.Sequential()
         self.network.add(layers.Dense(512, activation='relu', input_shape=(28*28,)))
+        self.network.add(layers.Dense(512, activation='relu'))
+        self.network.add(layers.Dense(512, activation='relu'))
+        self.network.add(layers.Dense(512, activation='relu'))
         self.network.add(layers.Dense(10, activation='softmax'))
 
         self.network.compile(optimizer='rmsprop',
@@ -317,7 +320,7 @@ class GridScreen:
                 if predictions[0,p] > maximum:
                     max_idx = p
                     maximum = predictions[0,p]
-            if maximum > 0.4:
+            if maximum > 0.8:
                 if debug: print("### Prediction (%d, %d) %d " % (i, j, max_idx))
                 return max_idx
             else:
