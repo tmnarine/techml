@@ -12,7 +12,7 @@ Selectors in Objective-C support a very dynamic programming model.  This program
 ## Machine Learning
 
 ### Running Tensorflow DirectML on AMD Hardware
-A small [example](ml/directml/testconv2dformats.py) that demonstrates how to run the [DirectML version of TensorFlow](https://docs.microsoft.com/en-us/windows/win32/direct3d12/gpu-tensorflow-windows) on AMD GPUs.  Use the DirectML link to learn how setup your Python and Tensorflow modules.  Code is for generic simple convolution and is a good starting point for working with an AMD GPU. 
+A small [example](ml/directml/testconv2dformats.py) that demonstrates how to run the [DirectML version of TensorFlow](https://learn.microsoft.com/en-us/windows/ai/directml/gpu-tensorflow-plugin) on AMD GPUs.  Use the DirectML link to learn how setup your Python and Tensorflow modules.  Code is for generic simple convolution and is a good starting point for working with an AMD GPU. 
 
 ### Root Mean Square Error (RMSE)
 In datascience, RMSE is used to find the error between predicted and observed values.  Given n predicted and observed values, you find the result of the following:

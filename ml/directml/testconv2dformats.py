@@ -4,7 +4,14 @@
 # line to see lines such as the following:
 #    ... tensorflow/core/common_runtime/dml/dml_device_cache.cc:109] DirectML:
 #                       creating device on adapter 0 (AMD Radeon(TM) RX 5600M Series)
-# I used Python 3.7.7
+# I used Python 3.10.8
+#
+# Commands to setup:
+# python -m venv ./tfenv
+# source ./tfenv/Scripts/activate
+# pip install tensorflow-cpu
+# pip install tensorflow-directml-plugin
+#
 
 import numpy as np
 import tensorflow as tf
@@ -63,9 +70,7 @@ def TensorFlowTest(N, H, W, R, S, I, O, keepDataConstant, keepWeightConstant, de
     # Create a session to run the conv2d as directml support is in an older version of Tensorflow
     session=tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(gpu_options=gpu_config))
 
-    tensor_result = session.run(
-            tf.nn.conv2d( tensor_data, tensor_weights, strides=(1,1,1,1), padding='VALID', data_format=df)
-        )
+    tensor_result = tf.nn.conv2d( tensor_data, tensor_weights, strides=(1,1,1,1), padding='VALID', data_format=df)
 
     print("Result Shape: ", str(tensor_result.shape))
     print("Result: ")
